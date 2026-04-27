@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: photo_gallery_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: photo_gallery
+      POSTGRES_USER: gallery_user
+      POSTGRES_PASSWORD: gallery_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gallery_user -d photo_gallery"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: photo_gallery_backend
+    restart: unless-stopped
+    environment:
+      DJANGO_SETTINGS_MODULE: gallery.settings
+      DB_NAME: photo_gallery
+      DB_USER: gallery_user
+      DB_PASSWORD: gallery_password
+      DB_HOST: db
+      DB_PORT: 5432
+    volumes:
+      - ./backend:/app
+      - media_data:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: photo_gallery_frontend
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  postgres_data:
+  media_data:

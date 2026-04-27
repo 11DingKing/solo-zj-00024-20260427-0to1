@@ -10,10 +10,8 @@
   let pageNum = 1;
   let hasMore = true;
   let loadingMore = false;
-  let user = null;
 
   $: username = $page.params.username;
-  $: isOwnProfile = !username || (auth.subscribe(s => s.user?.username === username));
 
   async function loadTimeline(append = false) {
     try {
@@ -25,10 +23,7 @@
         hasMore = true;
       }
 
-      let url = `/photos/timeline/?page=${pageNum}`;
-      if (username) {
-        url = `/photos/timeline/${username}/?page=${pageNum}`;
-      }
+      let url = `/photos/timeline/${username}/?page=${pageNum}`;
 
       const response = await api.get(url);
       
@@ -81,11 +76,7 @@
   <div class="container">
     <div class="page-header">
       <h1>
-        {#if username}
-          {username}'s Timeline
-        {:else}
-          My Timeline
-        {/if}
+        {username}'s Timeline
       </h1>
       <p class="subtitle">Photos organized by date</p>
     </div>
@@ -109,10 +100,7 @@
           <line x1="3" y1="10" x2="21" y2="10" />
         </svg>
         <h3>No photos yet</h3>
-        <p>Upload photos to see them in your timeline</p>
-        {#if !username}
-          <a href="/albums" class="btn btn-primary">Go to Albums</a>
-        {/if}
+        <p>This user hasn't uploaded any photos yet</p>
       </div>
     {:else}
       <div class="timeline">
@@ -214,7 +202,6 @@
 
   .empty-state p {
     color: #6b7280;
-    margin-bottom: 16px;
   }
 
   .timeline {

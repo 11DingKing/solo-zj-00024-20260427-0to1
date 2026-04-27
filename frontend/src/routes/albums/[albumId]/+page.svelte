@@ -194,6 +194,7 @@
       });
       
       loadTags();
+      loadPhotos();
       selectedPhotos.clear();
       selectedPhotos = new Set(selectedPhotos);
       showBatchModal = false;
@@ -623,25 +624,26 @@
   }
 
   .photos-grid {
-    columns: 4;
-    column-gap: 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
   }
 
   @media (max-width: 1024px) {
     .photos-grid {
-      columns: 3;
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
   @media (max-width: 768px) {
     .photos-grid {
-      columns: 2;
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (max-width: 480px) {
     .photos-grid {
-      columns: 1;
+      grid-template-columns: 1fr;
     }
   }
 

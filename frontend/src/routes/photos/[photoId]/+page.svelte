@@ -117,6 +117,18 @@
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
+
+  function hasExifData(photo) {
+    return photo.exif_camera_make ||
+           photo.exif_camera_model ||
+           photo.exif_lens_model ||
+           photo.exif_focal_length ||
+           photo.exif_aperture ||
+           photo.exif_shutter_speed ||
+           photo.exif_iso ||
+           photo.exif_flash !== null ||
+           photo.exif_white_balance;
+  }
 </script>
 
 <svelte:head>
@@ -318,20 +330,6 @@
     {/if}
   </div>
 </div>
-
-<script>
-  function hasExifData(photo) {
-    return photo.exif_camera_make ||
-           photo.exif_camera_model ||
-           photo.exif_lens_model ||
-           photo.exif_focal_length ||
-           photo.exif_aperture ||
-           photo.exif_shutter_speed ||
-           photo.exif_iso ||
-           photo.exif_flash !== null ||
-           photo.exif_white_balance;
-  }
-</script>
 
 <style>
   .photo-header {

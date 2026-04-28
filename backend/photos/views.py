@@ -110,6 +110,14 @@ class PhotoListCreateView(generics.ListCreateAPIView):
         generate_thumbnails(image_file, photo)
         photo.save()
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        output_serializer = PhotoListSerializer(serializer.instance, context={'request': request})
+        return Response(output_serializer.data, status=201, headers=headers)
+
 
 class PhotoRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]

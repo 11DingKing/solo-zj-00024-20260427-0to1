@@ -100,6 +100,18 @@
     color: #2563eb;
   }
 
+  .nav-links a.btn {
+    color: inherit;
+  }
+
+  .nav-links a.btn-primary {
+    color: white;
+  }
+
+  .nav-links a.btn-primary:hover {
+    color: white;
+  }
+
   .user-menu {
     display: flex;
     align-items: center;

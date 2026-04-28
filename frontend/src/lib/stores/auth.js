@@ -88,8 +88,27 @@ function createAuthStore() {
       );
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || "Registration failed");
+        let errorMessage = "Registration failed";
+        try {
+          const error = await response.json();
+          if (error.detail) {
+            errorMessage = error.detail;
+          } else if (error.username) {
+            errorMessage = `Username: ${error.username[0]}`;
+          } else if (error.email) {
+            errorMessage = `Email: ${error.email[0]}`;
+          } else if (error.password) {
+            errorMessage = `Password: ${error.password[0]}`;
+          } else if (typeof error === 'object') {
+            const firstKey = Object.keys(error)[0];
+            if (firstKey && Array.isArray(error[firstKey])) {
+              errorMessage = error[firstKey][0];
+            }
+          }
+        } catch (e) {
+          errorMessage = "Registration failed. Please try again.";
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
